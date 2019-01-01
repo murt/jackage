@@ -1,0 +1,7 @@
+# TODO: Use the wildcard once all output directories are in place
+docs
+test
+tsconfig.json
+tslint.json
+typedoc.json
+yarn.lock
