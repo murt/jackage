@@ -1,0 +1,13 @@
+{
+    "verbose": true,
+    "moduleFileExtensions": ["ts", "js", "json"],
+    "transform": {
+        "\\.ts$": "ts-jest"
+    },
+    "roots": ["test"],
+    "testRegex": "\\.test\\.ts$",
+    "collectCoverage": true,
+    "coverageDirectory": "coverage",
+    "coverageReporters": ["text", "html", "clover"],
+    "testEnvironment": "node"
+}

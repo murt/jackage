@@ -1,3 +1,14 @@
 {
-    "extends": "tslint:recommended"
+    "extends": "tslint:recommended",
+    "linterOptions": {
+        "exclude": [
+            "dist",
+            "coverage",
+            "docs"
+        ]
+    },
+    "rules": {
+        "no-require-imports": true,
+        "arrow-parens": false
+    }
 }

@@ -3,9 +3,22 @@
         "module": "commonjs",
         "noImplicitAny": true,
         "preserveConstEnums": true,
-        "lib": ["es2015"]
+        "outDir": "dist",
+        "target": "es2015",
+        "strict": true,
+        "moduleResolution": "node",
+        "noEmitOnError": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "inlineSourceMap": true,
+        "allowSyntheticDefaultImports": true,
+        "types": ["jest"],
+        "declaration": true
     },
     "files": [
         "src/index.ts",
     ],
+    "exclude": [
+        "node_modules"
+    ]
 }

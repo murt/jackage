@@ -7,14 +7,19 @@
         "url": "https://github.com/murt/jackage/issues"
     },
     "license": "MIT",
+    "main": "dist",
     "scripts": {
         "build": "tsc",
-        "docs": "typedoc",
+        "clean": "jest --clearCache && del-cli dist coverage docs \"*.log\"",
+        "docs": "typedoc --options typedoc.json",
         "lint": "tslint --project .",
-        "test": "jest"
+        "test": "jest --config jest.json"
     },
     "devDependencies": {
+        "@types/jest": "23.3.11",
+        "del-cli": "1.1.0",
         "jest": "23.6.0",
+        "ts-jest": "23.10.5",
         "tslint": "5.12.0",
         "typedoc": "0.13.0",
         "typescript": "3.2.2"
