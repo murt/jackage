@@ -1,5 +1,5 @@
 import {IJKGConfig} from "./config";
-import {JKGCompilerEvent} from "./types";
+import {IJKGCompilerEventContext, JKGCompilerEvent, JKGLogLevel} from "./types";
 
 /**
  * Primary class for compilation. This is the main type to instantiate
@@ -46,13 +46,29 @@ export default class JKGCompiler {
     }
 
     /**
+     * Logs a message via the compiler's event system. Note that this is technically an asynchronous function as
+     * the event pipeline is async, in practice however the logging functionality should be considered fire and
+     * forget. It is suggested that you "await" this function though if you are inside an "ansync" function just
+     * for the sake of consistency.
+     *
+     * @param level The level that this message will be logged at.
+     * @param message The content of the message to log.
+     */
+    public async log(level: JKGLogLevel, message: string) {
+        await this.dispatchEvent(JKGCompilerEvent.Log, { level, message });
+    }
+
+    /**
      * Calls any available handlers registered for a compiler event.
      *
      * @param event The name of the event being dispatched.
      */
-    private async dispatchEvent(event: JKGCompilerEvent) {
-        for (const callback of (this.events[event] || [])) {
-            await callback(event, this);
+    private async dispatchEvent(event: JKGCompilerEvent, context: any = {}) {
+        if (this.events.hasOwnProperty(event) && this.events[event].length) {
+            const data = {event, compiler: this, ...context};
+            for (const callback of this.events[event]) {
+                await callback(data);
+            }
         }
     }
 }
@@ -60,4 +76,4 @@ export default class JKGCompiler {
 /**
  * Compiler callbacks are assigned to events.
  */
-export type JKGCompilerEventHandler = (event: JKGCompilerEvent, compiler: JKGCompiler) => void | Promise<void>;
+export type JKGCompilerEventHandler = (context: IJKGCompilerEventContext) => void | Promise<void>;

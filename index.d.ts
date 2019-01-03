@@ -10,7 +10,7 @@ declare module 'jackage' {
 
 declare module 'jackage/compiler' {
     import { IJKGConfig } from "jackage/config";
-    import { JKGCompilerEvent } from "jackage/types";
+    import { IJKGCompilerEventContext, JKGCompilerEvent, JKGLogLevel } from "jackage/types";
     /**
         * Primary class for compilation. This is the main type to instantiate
         * and bundle your resources with.
@@ -26,11 +26,19 @@ declare module 'jackage/compiler' {
                 * @param callback Callback function that will be added to the list of handlers for this event.
                 */
             on(event: JKGCompilerEvent, callback: JKGCompilerEventHandler): JKGCompiler;
+            /**
+                * Logs a message via the compiler's event system. Note that this is "technically" an asynchronous function as
+                * the event pipeline is async.
+                *
+                * @param level The level that this message will be logged at.
+                * @param message The content of the message to log.
+                */
+            log(level: JKGLogLevel, message: string): Promise<void>;
     }
     /**
         * Compiler callbacks are assigned to events.
         */
-    export type JKGCompilerEventHandler = (event: JKGCompilerEvent, compiler: JKGCompiler) => void | Promise<void>;
+    export type JKGCompilerEventHandler = (context: IJKGCompilerEventContext) => void | Promise<void>;
 }
 
 declare module 'jackage/config' {
@@ -77,13 +85,44 @@ declare module 'jackage/config' {
 }
 
 declare module 'jackage/types' {
+    import JKGCompiler from "jackage/compiler";
+    export const enum JKGLogLevel {
+            Debug = "debug",
+            Info = "info"
+    }
     /**
-      * Set of valid events that the compiler will dispatch event handling for.
-      */
+        * Set of valid events that the compiler will dispatch event handling for.
+        */
     export const enum JKGCompilerEvent {
-        Starting = "starting",
-        Started = "started",
-        Log = "log"
+            /**
+                * This event is dispatched whenever a log entry is published. By default Jackage is silent - listening for this
+                * event is the only way get log messages out of the compiler and print them.
+                */
+            Log = "log",
+            /**
+                * The compiler has just called [[JKGCompiler.run]] - this event is dispatched quite literally before any other
+                * functionality in the "run" function.
+                */
+            Starting = "starting",
+            /**
+                * The compiler is running, configuration has been validated, and all entry point source files have been gathered.
+                * This event is dispatched immediately before any actual processing of source files occurs.
+                */
+            Started = "started"
+    }
+    /**
+        * All compiler events have context.
+        */
+    export interface IJKGCompilerEventContext {
+            /**
+                * The event being dispatched that generated this context.
+                */
+            event: JKGCompilerEvent;
+            /**
+                * Reference to the compiler instance that generated this context. This is also the preferred way of publishing
+                * a log entry as [[JKGCompiler.log]] can be called on this object.
+                */
+            compiler: JKGCompiler;
     }
 }
 
