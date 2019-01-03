@@ -16,7 +16,7 @@
         "declaration": true
     },
     "files": [
-        "src/index.ts",
+        "src/index.ts"
     ],
     "exclude": [
         "node_modules"

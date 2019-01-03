@@ -1,4 +1,5 @@
 import {IJKGConfig} from "./config";
+import {JKGCompilerEvent} from "./types";
 
 /**
  * Primary class for compilation. This is the main type to instantiate
@@ -28,6 +29,12 @@ export default class JKGCompiler {
         }
     }
 
+    /**
+     * Listen for events that are dispatched by the compiler instance.
+     *
+     * @param event The name of the event to listen for.
+     * @param callback Callback function that will be added to the list of handlers for this event.
+     */
     public on(event: JKGCompilerEvent, callback: JKGCompilerEventHandler): JKGCompiler {
         if (!this.events.hasOwnProperty(event)) {
            this.events[event] = [];
@@ -48,15 +55,6 @@ export default class JKGCompiler {
             await callback(event, this);
         }
     }
-}
-
-/**
- * Compiler events.
- */
-export const enum JKGCompilerEvent {
-    Starting = "starting",
-    Started = "started",
-    Log = "log",
 }
 
 /**
